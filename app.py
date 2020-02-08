@@ -12,7 +12,7 @@ from msg_handlers.messagefilter import MessageFilter
 from msg_handlers.chat_controller import ChatController
 from msg_handlers.keyboard_control import KeyboardController
 
-from flask_socketio import SocketIO
+from flask_socketio import SocketIO, emit
 
 # Initialize a Flask app to host the events adapter
 app = Flask(__name__)
@@ -27,6 +27,30 @@ socketio = SocketIO(app)
 # bot_sent = {"channel": {"user_id": onboarding}}
 bot_sent = {}
 state = {'setup': False}
+
+@app.route('/')
+def index():
+    return "Hello world!"
+
+@app.route('/listener')
+def listener():
+    return "<script src='//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js' integrity='sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=' crossorigin='anonymous'></script>" + \
+           "<script type='text/javascript' charset='utf-8'>"+ \
+           "    var socket = io();" + \
+           "    socket.on('connect', function() {" + \
+           "        alert('hello');" + \
+           "        socket.emit('my event', {data: 'connected!'});" + \
+           "    });" + \
+           "</script>"
+
+@socketio.on('connect')
+def test_connect():
+    emit('after connect',  {'data':'Lets dance'})
+    print("connected")
+
+@socketio.on('message')
+def handle_message(message):
+    print('received key: ' + message)
 
 def start_onboarding(user_id: str, channel: str):
     # Create a new onboarding tutorial.
@@ -179,10 +203,11 @@ def handle_new_message(user_id: str, channel: str, text: str):
     print(f"{text} by {user_id} on #{channel} is {'' if valid else 'IN'}VALID")
     if triggered_key:
         print(f"Key '{triggered_key}' was hit")
+        emit("Key", triggered_key, broadcast=True)
 
 if __name__ == "__main__":
     logger = logging.getLogger()
     logger.setLevel(logging.DEBUG)
     logger.addHandler(logging.StreamHandler())
     ssl_context = ssl_lib.create_default_context(cafile=certifi.where())
-    app.run(port=3000)
+    socketio.run(app)
