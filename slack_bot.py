@@ -6,7 +6,7 @@ import os
 
 
 app = Flask(__name__)
-app.config['SLACK_TOKEN'] = S3Connection(os.environ['SLACK_TOKEN']])
+app.config['SLACK_TOKEN'] = S3Connection(os.environ['SLACK_TOKEN'])
 app.config['SLACK_CALLBACK'] = '/slack_callback'
 app.debug = True
 slackbot = SlackBot(app)
