@@ -1,6 +1,6 @@
 from flask import Flask
 from flask_slackbot import SlackBot
-from hidden_token import get_token
+#from hidden_token import get_token
 from boto.s3.connection import S3Connection
 import os
 
