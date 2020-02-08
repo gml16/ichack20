@@ -171,7 +171,7 @@ def setup_controllers(user_id: str, channel: str, text: str):
 def handle_new_message(user_id: str, channel: str, text: str):
     # Takes the input and parses it
     message = Message(user_id+'#'+channel, text)
-    is_legal, triggered_key = chatFilter.filter_message(message)
+    valid, triggered_key = chatFilter.filter_message(message)
     print(f"{text} by {user_id} on #{channel} is {'' if valid else 'IN'}VALID")
     if triggered_key:
         print(f"Key '{triggered_key}' was hit")
