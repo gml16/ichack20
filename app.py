@@ -165,7 +165,7 @@ def setup_controllers(user_id: str, channel: str, text: str):
     # Initialise the command parsers
     global keyboard, chatController, chatFilter
     keyboard = KeyboardController()
-    chatController = ChatController(keyboard, update_every=update_every, count=count)
+    chatController = ChatController(keyboard, update_every=update_every, count=count, verbose=True)
     chatFilter = MessageFilter(legal_moves, chatController)
 
     is_setup = True
