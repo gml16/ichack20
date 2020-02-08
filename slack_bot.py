@@ -2,7 +2,7 @@ from flask import Flask
 
 from flask_slackbot import SlackBot
 
-from token import get_token
+from hidden_token import get_token
 
 
 app = Flask(__name__)
