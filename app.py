@@ -155,7 +155,7 @@ def setup_controllers(user_id: str, channel: str, text: str):
     # !setup time/count value_of_update legal_moves_seperated_with_space
     tokens = text.split(' ')
     count = tokens[1].lower() == 'count'
-    update_every = float(tokens[2])
+    update_every = int(tokens[2]) if count else float(tokens[2])
     legal_moves = tokens[3:]
     
     print(f"Setup by {user_id} on #{channel}:\n'{count}'\n'{update_every}'\n'{legal_moves}'")
