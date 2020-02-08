@@ -145,10 +145,11 @@ def message(payload):
 
     if text and text.lower() == "start":
         return start_onboarding(user_id, channel_id)
-    elif text and text.lower().startswith('!setup'):
-        return setup_controllers(user_id, channel_id, text)
-    elif state['setup']:
+    if text and state['setup']:
         return handle_new_message(user_id, channel_id, text)
+    else:
+        if text and text.lower().startswith('!setup'):
+            return setup_controllers(user_id, channel_id, text)
 
 def setup_controllers(user_id: str, channel: str, text: str):
     # Parses the message
