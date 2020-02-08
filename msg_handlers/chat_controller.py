@@ -27,7 +27,8 @@ class ChatController():
         if self._verbose:
             print(f"Received '{move}' and has size {len(self._storage)}")
         if self.time_for_update():
-            self.update_command()
+            return self.update_command()
+        return False
 
     def time_for_update(self):
         """ 
@@ -61,6 +62,7 @@ class ChatController():
         self._keyboard.press_keys(move)
         if self._verbose:
             print(f"Pressed '{move}'")
+        return move
 
 
 if __name__== "__main__":
