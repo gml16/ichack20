@@ -1,1 +1,1 @@
-web: python slack_bot.py
+web: gunicorn slack_bot:play4us
