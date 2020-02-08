@@ -181,6 +181,7 @@ def handle_new_message(user_id: str, channel: str, text: str):
     print(f"{text} by {user_id} on #{channel} is {'' if valid else 'IN'}VALID")
     if triggered_key:
         print(f"Key '{triggered_key}' was hit")
+        print(ip, port)
         requests.post(f'http://{ip}:{port}', json = {'key':triggered_key})
         # curl --header "Content-Type: application/json" --request POST --data '{"key":KEYSTROKE}' IP:PORT
 
