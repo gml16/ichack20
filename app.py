@@ -26,7 +26,7 @@ socketio = SocketIO(app)
 # For simplicity we'll store our app data in-memory with the following data structure.
 # bot_sent = {"channel": {"user_id": onboarding}}
 bot_sent = {}
-is_setup = False
+state = {'setup': False}
 
 def start_onboarding(user_id: str, channel: str):
     # Create a new onboarding tutorial.
@@ -150,16 +150,16 @@ def message(payload):
         return start_onboarding(user_id, channel_id)
     elif text and text.lower().startswith('!setup'):
         return setup_controllers(user_id, channel_id, text)
-    elif is_setup:
+    elif state['setup']:
         return handle_new_message(user_id, channel_id, text)
 
 def setup_controllers(user_id: str, channel: str, text: str):
     # Parses the message
     # Must be of the form:
-    # !setup time/amount value_of_update legal_moves_seperated_with_space
+    # !setup time/count value_of_update legal_moves_seperated_with_space
     tokens = text.split(' ')
-    count = tokens[1].lower() == 'amount'
-    update_every = float(tokens[2])
+    count = tokens[1].lower() == 'count'
+    update_every = int(tokens[2]) if count else float(tokens[2])
     legal_moves = tokens[3:]
 
     print(f"Setup by {user_id} on #{channel}:\n'{count}'\n'{update_every}'\n'{legal_moves}'")
@@ -167,16 +167,18 @@ def setup_controllers(user_id: str, channel: str, text: str):
     # Initialise the command parsers
     global keyboard, chatController, chatFilter
     keyboard = KeyboardController()
-    chatController = ChatController(keyboard, update_every=update_every, count=count, verbose=True)
+    chatController = ChatController(keyboard, update_every=update_every, count=count)
     chatFilter = MessageFilter(legal_moves, chatController)
 
-    is_setup = True
+    state['setup'] = True
 
 def handle_new_message(user_id: str, channel: str, text: str):
     # Takes the input and parses it
     message = Message(user_id+'#'+channel, text)
-    chatFilter.filter_message(message)
-    print(f"Registered {text} by {user_id} on #{channel}")
+    valid, triggered_key = chatFilter.filter_message(message)
+    print(f"{text} by {user_id} on #{channel} is {'' if valid else 'IN'}VALID")
+    if triggered_key:
+        print(f"Key '{triggered_key}' was hit")
 
 if __name__ == "__main__":
     logger = logging.getLogger()
