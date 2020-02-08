@@ -1,6 +1,6 @@
 
 
-class SlackBot:
+class Onboarding:
     """Constructs the onboarding message and stores the state of which tasks were completed."""
 
     # TODO: Create a better message builder:

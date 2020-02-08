@@ -6,18 +6,18 @@ import ssl as ssl_lib
 import certifi
 import slack
 
-from slackbot import SlackBot
+from onboarding import Onboarding
 
 """This file serves as an example for how to create the same app, but running asynchronously."""
 
 # For simplicity we'll store our app data in-memory with the following data structure.
-# onboarding_tutorials_sent = {"channel": {"user_id": SlackBot}}
+# onboarding_tutorials_sent = {"channel": {"user_id": Onboarding}}
 onboarding_tutorials_sent = {}
 
 
 async def start_onboarding(web_client: slack.WebClient, user_id: str, channel: str):
     # Create a new onboarding tutorial.
-    bot = SlackBot(channel)
+    bot = Onboarding(channel)
 
     # Get the onboarding message payload
     message = bot.get_message_payload()

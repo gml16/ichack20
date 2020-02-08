@@ -5,7 +5,7 @@ from slack import WebClient
 from slackeventsapi import SlackEventAdapter
 import ssl as ssl_lib
 import certifi
-from slackbot import onboarding
+from onboarding import Onboarding
 
 from msg_handlers.message import Message
 from msg_handlers.messagefilter import MessageFilter
@@ -25,7 +25,7 @@ bot_sent = {}
 
 def start_onboarding(user_id: str, channel: str):
     # Create a new onboarding tutorial.
-    onboarding_tutorial = onboarding(channel)
+    onboarding_tutorial = Onboarding(channel)
 
     # Get the onboarding message payload
     message = onboarding_tutorial.get_message_payload()
