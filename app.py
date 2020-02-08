@@ -169,7 +169,7 @@ def setup_controllers(user_id: str, channel: str, text: str):
     chatController = ChatController(keyboard, update_every=update_every, count=count)
     chatFilter = MessageFilter(legal_moves, chatController)
 
-    state[setup'] = True
+    state['setup'] = True
 
 def handle_new_message(user_id: str, channel: str, text: str):
     # Takes the input and parses it
