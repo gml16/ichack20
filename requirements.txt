@@ -6,3 +6,4 @@ keyboard
 SlackBot
 flask_slackbot
 gunicorn
+requests

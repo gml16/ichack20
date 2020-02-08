@@ -5,6 +5,7 @@ from slack import WebClient
 from slackeventsapi import SlackEventAdapter
 import ssl as ssl_lib
 import certifi
+import requests
 from onboarding import Onboarding
 
 from msg_handlers.message import Message
@@ -152,13 +153,15 @@ def message(payload):
 def setup_controllers(user_id: str, channel: str, text: str):
     # Parses the message
     # Must be of the form:
-    # !setup time/count value_of_update legal_moves_seperated_with_space
+    # !setup time/count value_of_update ip:port legal_moves_seperated_with_space
     tokens = text.split(' ')
     count = tokens[1].lower() == 'count'
     update_every = int(tokens[2]) if count else float(tokens[2])
-    legal_moves = tokens[3:]
+    global ip, port
+    ip, port = tokens[3].split(':')
+    legal_moves = tokens[4:]
     
-    print(f"Setup by {user_id} on #{channel}:\n'{count}'\n'{update_every}'\n'{legal_moves}'")
+    print(f"Setup by {user_id} on #{channel}:\n{count}\n{update_every}\n{ip}:{port}\n{legal_moves}")
 
     # Initialise the command parsers
     global keyboard, chatController, chatFilter
@@ -166,7 +169,7 @@ def setup_controllers(user_id: str, channel: str, text: str):
     chatController = ChatController(keyboard, update_every=update_every, count=count)
     chatFilter = MessageFilter(legal_moves, chatController)
 
-    state['setup'] = True
+    state[setup'] = True
 
 def handle_new_message(user_id: str, channel: str, text: str):
     # Takes the input and parses it
@@ -175,6 +178,8 @@ def handle_new_message(user_id: str, channel: str, text: str):
     print(f"{text} by {user_id} on #{channel} is {'' if valid else 'IN'}VALID")
     if triggered_key:
         print(f"Key '{triggered_key}' was hit")
+        requests.post(f'http://{ip}:{port}', json = {'key':triggered_key})
+        # curl --header "Content-Type: application/json" --request POST --data '{"key":KEYSTROKE}' IP:PORT
 
 if __name__ == "__main__":
     logger = logging.getLogger()
