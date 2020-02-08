@@ -1,12 +1,16 @@
 import keyboard
 
-def press_keys(key_string):
-    keys = key_string.split()
-    for key in keys:
-        try:
-            keyboard.press(key)
-        except:
-            print(key, "does not exist.")
+class KeyboardController():
+    def __init__(self):
+        pass
+
+    def press_keys(self, key_string):
+        keys = key_string.split()
+        for key in keys:
+            try:
+                keyboard.press(key)
+            except:
+                print(key, "does not exist.")
 
 if __name__== "__main__":
     import argparse

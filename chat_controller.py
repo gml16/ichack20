@@ -19,16 +19,17 @@ class ChatController():
         if len(self._storage) >= self._update_limit:
             moves = [self._storage.popleft() for _ in range(self._update_limit)]
             move = Counter(moves).most_common(1)[0][0]
-            self._keyboard(move)
+            self._keyboard.press_keys(move)
             if self._verbose:
                 print(f"Pressed '{move}'")
 
 
 if __name__== "__main__":
-    from keyboard_control import press_keys
+    from keyboard_control import KeyboardController
     from messagefilter import MessageFilter
     from message import Message
-    c = ChatController(press_keys, update_every=3, verbose=True)
+    k = KeyboardController()
+    c = ChatController(k, update_every=3, verbose=True)
     moves = [('', 'adsadsd'), ('', 'adsadsd'), ('', 'adsadsd'), ('', 'adsadsd'),
             ('', 'r'), ('', 'r'), ('', 'r'), ('', 'r'), ('', 'e'), ('', 'e'), ('', 'e'), ('', 'asdsad'), ('', 'bbbbb'),
             ('', 'm'), ('', 'cc'), ('', 'i'), ('', 'e'), 
