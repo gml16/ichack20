@@ -20,3 +20,5 @@ class MessageFilter():
         move = message._content.lower()
         if move in self._legal_moves:
             self._controller.register_move(move)
+            return True
+        return False
