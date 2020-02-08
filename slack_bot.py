@@ -11,6 +11,26 @@ app.config['SLACK_CALLBACK'] = '/slack_callback'
 app.debug = True
 slackbot = SlackBot(app)
 
+@app.route('/')
+def index():
+    return "Hello, World!"
+
+@app.route('/slack_challenge', methods = ['POST'])
+def slack_challenge():
+    if request.method == 'POST':
+        data = {
+            'hello'  : 'world',
+            'number' : 3
+        }
+        js = json.dumps(data)
+
+        resp = Response(js, status=200, mimetype='application/json')
+        resp.headers['Link'] = 'http://luisrei.com'
+
+        return resp
+
+
+
 '''
 The parameter of the callback function is a dict returns from the slack's outgoing api.
 Here is the detail:
