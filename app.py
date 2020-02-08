@@ -12,12 +12,16 @@ from msg_handlers.messagefilter import MessageFilter
 from msg_handlers.chat_controller import ChatController
 from msg_handlers.keyboard_control import KeyboardController
 
+from flask_socketio import SocketIO
+
 # Initialize a Flask app to host the events adapter
 app = Flask(__name__)
 slack_events_adapter = SlackEventAdapter(os.environ["SLACK_SIGNING_SECRET"], "/slack/events", app)
 
 # Initialize a Web API client
 slack_web_client = WebClient(token=os.environ['SLACK_TOKEN'])
+
+socketio = SocketIO(app)
 
 # For simplicity we'll store our app data in-memory with the following data structure.
 # bot_sent = {"channel": {"user_id": onboarding}}
@@ -157,7 +161,7 @@ def setup_controllers(user_id: str, channel: str, text: str):
     count = tokens[1].lower() == 'amount'
     update_every = float(tokens[2])
     legal_moves = tokens[3:]
-    
+
     print(f"Setup by {user_id} on #{channel}:\n'{count}'\n'{update_every}'\n'{legal_moves}'")
 
     # Initialise the command parsers
