@@ -1,5 +1,4 @@
 import keyboard
-import argparse
 
 def press_keys(key_string):
     keys = key_string.split()
@@ -10,6 +9,7 @@ def press_keys(key_string):
             print(key, "does not exist.")
 
 if __name__== "__main__":
+    import argparse
     parser = argparse.ArgumentParser()
     parser.add_argument('--keys', help='One or multiple keys to press (key names can be space, left, a, ...)')
     args = parser.parse_args()
