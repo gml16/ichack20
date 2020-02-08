@@ -5,4 +5,3 @@ certifi
 keyboard
 SlackBot
 flask_slackbot
-boto
