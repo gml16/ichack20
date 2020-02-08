@@ -142,8 +142,6 @@ def message(payload):
     user_id = event.get("user")
     text = event.get("text")
 
-    print(f"Bot detected text: \n'{text}'")
-
     if text and text.lower() == "start":
         return start_onboarding(user_id, channel_id)
     elif text and text.lower().startswith('!setup'):
@@ -160,7 +158,7 @@ def setup_controllers(user_id: str, channel: str, text: str):
     update_every = float(tokens[2])
     legal_moves = tokens[3:]
     
-    print(f"Read:\n'{count}'\n'{update_every}'\n'{legal_moves}'")
+    print(f"Setup by {user_id} on #{channel}:\n'{count}'\n'{update_every}'\n'{legal_moves}'")
 
     # Initialise the command parsers
     global keyboard, chatController, chatFilter
@@ -174,6 +172,7 @@ def handle_new_message(user_id: str, channel: str, text: str):
     # Takes the input and parses it
     message = Message(user_id+'#'+channel, text)
     chatFilter.filter_message(message)
+    print(f"Registered {text} by {user_id} on #{channel}")
 
 if __name__ == "__main__":
     logger = logging.getLogger()
