@@ -5,7 +5,12 @@ from slack import WebClient
 from slackeventsapi import SlackEventAdapter
 import ssl as ssl_lib
 import certifi
-from slackbot import SlackBot
+from slackbot import onboarding
+
+from msg_handlers.message import Message
+from msg_handlers.messagefilter import MessageFilter
+from msg_handlers.chat_controller import ChatController
+from msg_handlers.keyboard_control import KeyboardController
 
 # Initialize a Flask app to host the events adapter
 app = Flask(__name__)
@@ -15,13 +20,12 @@ slack_events_adapter = SlackEventAdapter(os.environ["SLACK_SIGNING_SECRET"], "/s
 slack_web_client = WebClient(token=os.environ['SLACK_TOKEN'])
 
 # For simplicity we'll store our app data in-memory with the following data structure.
-# bot_sent = {"channel": {"user_id": SlackBot}}
+# bot_sent = {"channel": {"user_id": onboarding}}
 bot_sent = {}
-
 
 def start_onboarding(user_id: str, channel: str):
     # Create a new onboarding tutorial.
-    onboarding_tutorial = SlackBot(channel)
+    onboarding_tutorial = onboarding(channel)
 
     # Get the onboarding message payload
     message = onboarding_tutorial.get_message_payload()
@@ -137,10 +141,36 @@ def message(payload):
     user_id = event.get("user")
     text = event.get("text")
 
+    print(f"Bot detected text: \n'{text}'")
 
     if text and text.lower() == "start":
         return start_onboarding(user_id, channel_id)
+    elif text and text.lower().startswith('!setup'):
+        return setup_controllers(user_id, channel_id, text)
+    else:
+        return handle_new_message(user_id, channel_id, text)
 
+def setup_controllers(user_id: str, channel: str, text: str):
+    # Parses the message
+    # Must be of the form:
+    # !setup time/amount value_of_update legal_moves_seperated_with_space
+    tokens = text.split(' ')
+    count = tokens[1].lower() == 'amount'
+    update_every = float(tokens[2])
+    legal_moves = tokens[3:]
+    
+    print(f"Read:\n'{count}'\n'{update_every}'\n'{legal_moves}'")
+
+    # Initialise the command parsers
+    global keyboard, chatController, chatFilter
+    keyboard = KeyboardController()
+    chatController = ChatController(keyboard, update_every=update_every, count=count)
+    chatFilter = MessageFilter(legal_moves, chatController)
+
+def handle_new_message(user_id: str, channel: str, text: str):
+    # Takes the input and parses it
+    message = Message(user_id+'#'+channel, text)
+    chatFilter.filter_message(message)
 
 if __name__ == "__main__":
     logger = logging.getLogger()
