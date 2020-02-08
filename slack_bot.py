@@ -2,9 +2,11 @@ from flask import Flask
 
 from flask_slackbot import SlackBot
 
+from token import get_token
+
 
 app = Flask(__name__)
-app.config['SLACK_TOKEN'] = 'xoxb-930498421778-942836115620-8qpKUCFvtJyGlSTbo4hRTbZZ'
+app.config['SLACK_TOKEN'] = get_token()
 app.config['SLACK_CALLBACK'] = '/slack_callback'
 app.debug = True
 slackbot = SlackBot(app)
