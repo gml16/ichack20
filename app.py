@@ -143,6 +143,8 @@ def message(payload):
     user_id = event.get("user")
     text = event.get("text")
 
+    print(f"Received {text}")
+    
     if text and text.lower() == "start":
         return start_onboarding(user_id, channel_id)
     if text and state['setup']:
