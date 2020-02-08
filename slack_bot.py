@@ -1,4 +1,5 @@
-from flask import Flask
+from flask import Flask, request
+
 from flask_slackbot import SlackBot
 #from hidden_token import get_token
 import os
@@ -16,14 +17,14 @@ def index():
 @app.route('/slack_challenge', methods = ['POST'])
 def slack_challenge():
     if request.method == 'POST':
+
         data = {
-            'hello'  : 'world',
-            'number' : 3
+            "challenge"  : ''
         }
         js = json.dumps(data)
 
         resp = Response(js, status=200, mimetype='application/json')
-        resp.headers['Link'] = 'http://luisrei.com'
+        resp.headers['Link'] = request.url
 
         return resp
 
