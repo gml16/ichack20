@@ -22,6 +22,7 @@ slack_web_client = WebClient(token=os.environ['SLACK_TOKEN'])
 # For simplicity we'll store our app data in-memory with the following data structure.
 # bot_sent = {"channel": {"user_id": onboarding}}
 bot_sent = {}
+is_setup = False
 
 def start_onboarding(user_id: str, channel: str):
     # Create a new onboarding tutorial.
@@ -147,7 +148,7 @@ def message(payload):
         return start_onboarding(user_id, channel_id)
     elif text and text.lower().startswith('!setup'):
         return setup_controllers(user_id, channel_id, text)
-    else:
+    elif is_setup:
         return handle_new_message(user_id, channel_id, text)
 
 def setup_controllers(user_id: str, channel: str, text: str):
@@ -166,6 +167,8 @@ def setup_controllers(user_id: str, channel: str, text: str):
     keyboard = KeyboardController()
     chatController = ChatController(keyboard, update_every=update_every, count=count)
     chatFilter = MessageFilter(legal_moves, chatController)
+
+    is_setup = True
 
 def handle_new_message(user_id: str, channel: str, text: str):
     # Takes the input and parses it
