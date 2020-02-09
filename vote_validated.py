@@ -12,7 +12,7 @@ class ValidateVote:
             "text": {
                 "type": "mrkdwn",
                 "text": (
-                    f"Bip boop... chat has voted to do {vote}"
+                    f"Bip boop... chat has voted to do **{vote.upper()}**"
                 ),
             },
         }
