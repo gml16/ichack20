@@ -162,11 +162,9 @@ def setup_controllers(user_id: str, channel: str, text: str):
     tokens = text.split(' ')
     count = tokens[1].lower() == 'count'
     update_every = int(tokens[2]) if count else float(tokens[2])
-    global ip, port
-    ip, port = tokens[3].split(':')
-    legal_moves = tokens[4:]
+    legal_moves = tokens[3:]
     
-    print(f"Setup by {user_id} on #{channel}:\n{count}\n{update_every}\n{ip}:{port}\n{legal_moves}")
+    print(f"Setup by {user_id} on #{channel}:\n{count}\n{update_every}\n{legal_moves}")
 
     # Initialise the command parsers
     global keyboard, chatController, chatFilter
