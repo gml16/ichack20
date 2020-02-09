@@ -15,7 +15,6 @@ class ValidateVote:
             ),
         },
     }
-    DIVIDER_BLOCK = {"type": "divider"}
 
     def __init__(self, channel, vote):
         self.channel = channel
@@ -31,6 +30,6 @@ class ValidateVote:
             "username": self.username,
             "icon_emoji": self.icon_emoji,
             "blocks": [
-                self.WELCOME_BLOCK(self.vote)
+                self.VOTED_BLOCK(self.vote)
             ],
         }
