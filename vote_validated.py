@@ -6,20 +6,21 @@ class ValidateVote:
     # TODO: Create a better message builder:
     # https://github.com/slackapi/python-slackclient/issues/392
     # https://github.com/slackapi/python-slackclient/pull/400
-    VOTED_BLOCK = lambda vote: {
-        "type": "section",
-        "text": {
-            "type": "mrkdwn",
-            "text": (
-                f"Bip boop... chat has voted to do {vote}"
-            ),
-        },
-    }
+    def voted_block(self):
+        return {
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": (
+                    f"Bip boop... chat has voted to do {vote}"
+                ),
+            },
+        }
 
     def __init__(self, channel, vote):
         self.channel = channel
         self.vote = vote
-        self.username = "pythonboardingbot"
+        self.username = "VotingBot"
         self.icon_emoji = ":robot_face:"
         self.timestamp = ""
 
@@ -30,6 +31,6 @@ class ValidateVote:
             "username": self.username,
             "icon_emoji": self.icon_emoji,
             "blocks": [
-                self.VOTED_BLOCK(self.vote)
+                self.voted_block(self.vote)
             ],
         }
