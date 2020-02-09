@@ -31,7 +31,7 @@ socketio = SocketIO(app)
 bot_sent = {}
 state = {'setup': False}
 #global triggered_key
-triggered_key = deque()
+waiting_keys = deque()
 listening = True
 
 @app.route('/')
@@ -42,11 +42,10 @@ def index():
 def listener():
     while listening:
         time.sleep(0.1)
-        if len(triggered_key):
-            keys = triggered_key.popleft()
-            KeyboardController().press_keys(keys)
+        if len(waiting_keys):
+            KeyboardController().press_keys(waiting_keys.popleft())
 
-    return triggered_key #"Stopped listening"
+    return 200 #"Stopped listening"
     """
     return "<script src='//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js' integrity='sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=' crossorigin='anonymous'></script>" + \
            "<script type='text/javascript' charset='utf-8'>"+ \
@@ -225,7 +224,8 @@ def handle_new_message(user_id: str, channel: str, text: str):
     print(f"{text} by {user_id} on #{channel} is {'' if valid else 'IN'}VALID")
     if triggered_key:
         print(f"Key '{triggered_key}' was hit")
-        requests.post(f'http://{ip}:{port}', json = {'key':triggered_key}, timeout=1)
+        waiting_keys.append(triggered_key)
+        # requests.post(f'http://{ip}:{port}', json = {'key':triggered_key}, timeout=1)
         # curl --header "Content-Type: application/json" --request POST --data '{"key":KEYSTROKE}' IP:PORT
 
 if __name__ == "__main__":
