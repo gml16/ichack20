@@ -59,7 +59,7 @@ class ChatController():
             # or the entire deque if we're working with timing
             moves = [self._storage.popleft() for _ in range(len(self._storage))]
         move = Counter(moves).most_common(1)[0][0]
-        self._keyboard.press_keys(move)
+        # self._keyboard.press_keys(move)
         if self._verbose:
             print(f"Pressed '{move}'")
         return move

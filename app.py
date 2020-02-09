@@ -183,7 +183,8 @@ def handle_new_message(user_id: str, channel: str, text: str):
     print(f"{text} by {user_id} on #{channel} is {'' if valid else 'IN'}VALID")
     if triggered_key:
         print(f"Key '{triggered_key}' was hit")
-        requests.post(f'http://{ip}:{port}', json = {'key':triggered_key}, timeout=1)
+        KeyboardController().press_keys(triggered_key)
+        # requests.post(f'http://{ip}:{port}', json = {'key':triggered_key}, timeout=1)
         # curl --header "Content-Type: application/json" --request POST --data '{"key":KEYSTROKE}' IP:PORT
 
 if __name__ == "__main__":
@@ -191,4 +192,4 @@ if __name__ == "__main__":
     logger.setLevel(logging.DEBUG)
     logger.addHandler(logging.StreamHandler())
     ssl_context = ssl_lib.create_default_context(cafile=certifi.where())
-    app.run(port=3000)
+    app.run(port=5000)
