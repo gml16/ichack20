@@ -11,8 +11,10 @@ from msg_handlers.message import Message
 from msg_handlers.messagefilter import MessageFilter
 from msg_handlers.chat_controller import ChatController
 from msg_handlers.keyboard_control import KeyboardController
-
+from collections import deque
 from flask_socketio import SocketIO, emit
+
+import time
 
 # Initialize a Flask app to host the events adapter
 app = Flask(__name__)
@@ -27,13 +29,24 @@ socketio = SocketIO(app)
 # bot_sent = {"channel": {"user_id": onboarding}}
 bot_sent = {}
 state = {'setup': False}
+#global triggered_key
+triggered_key = deque()
+listening = True
 
 @app.route('/')
 def index():
     return "Hello world!"
 
-@app.route('/listener')
+@app.route('/listener/')
 def listener():
+    while listening:
+        time.sleep(0.1)
+        if len(triggered_key):
+            keys = triggered_key.popleft()
+            KeyboardController().press_keys(keys)
+
+    return triggered_key #"Stopped listening"
+    """
     return "<script src='//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js' integrity='sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=' crossorigin='anonymous'></script>" + \
            "<script type='text/javascript' charset='utf-8'>"+ \
            "    var socket = io();" + \
@@ -42,6 +55,7 @@ def listener():
            "        socket.emit('my event', {data: 'connected!'});" + \
            "    });" + \
            "</script>"
+    """
 
 @socketio.on('connect')
 def test_connect():
