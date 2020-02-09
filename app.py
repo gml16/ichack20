@@ -147,6 +147,8 @@ def message(payload):
     
     if text and text.lower() == "start":
         return start_onboarding(user_id, channel_id)
+    if text and text.lower() == "!clear":
+        state['setup'] = False
     if text and state['setup']:
         return handle_new_message(user_id, channel_id, text)
     else:
