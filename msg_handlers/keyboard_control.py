@@ -5,13 +5,12 @@ class KeyboardController():
         pass
 
     def press_keys(self, key_string):
-        pass
-        # keys = key_string.split()
-        # for key in keys:
-        #     try:
-        #         keyboard.press(key)
-        #     except:
-        #         print(f"{key}, does not exist.")
+         keys = key_string.split()
+         for key in keys:
+             try:
+                 keyboard.press(key)
+             except:
+                 print(f"{key}, does not exist.")
 
 if __name__== "__main__":
     import argparse

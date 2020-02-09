@@ -38,6 +38,16 @@ listening = True
 def index():
     return "Hello world!"
 
+@app.route('/test/')
+def test_listener():
+    return "<script> alert('ait'); var robot = require('robotjs'); " + \
+            "     for (var x = 0; x < width; x++) " + \
+            " { " + \
+            "     y = 50 * Math.sin((4 * x) / 400) + 50; " + \
+            "     robot.moveMouse(x, y); " + \
+            " } " + \
+           "robot.typeString('Hello World'); </script> "
+
 @app.route('/listener/')
 def listener():
     while listening:
@@ -185,7 +195,7 @@ def message(payload):
     text = event.get("text")
 
     print(f"Received {text}")
-    
+
     if text and text.lower() == "start":
         return start_onboarding(user_id, channel_id)
     if text and text.lower() == "!clear":
@@ -206,7 +216,7 @@ def setup_controllers(user_id: str, channel: str, text: str):
     global ip, port
     ip, port = tokens[3].split(':')
     legal_moves = tokens[4:]
-    
+
     print(f"Setup by {user_id} on #{channel}:\n{count}\n{update_every}\n{ip}:{port}\n{legal_moves}")
 
     # Initialise the command parsers
@@ -224,7 +234,8 @@ def handle_new_message(user_id: str, channel: str, text: str):
     print(f"{text} by {user_id} on #{channel} is {'' if valid else 'IN'}VALID")
     if triggered_key:
         print(f"Key '{triggered_key}' was hit")
-        waiting_keys.append(triggered_key)
+        KeyboardController().press_keys(triggered_key)
+        # waiting_keys.append(triggered_key)
         # requests.post(f'http://{ip}:{port}', json = {'key':triggered_key}, timeout=1)
         # curl --header "Content-Type: application/json" --request POST --data '{"key":KEYSTROKE}' IP:PORT
 
