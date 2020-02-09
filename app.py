@@ -7,6 +7,7 @@ import ssl as ssl_lib
 import certifi
 import requests
 from onboarding import Onboarding
+from vote_validated import ValidateVote
 
 from msg_handlers.message import Message
 from msg_handlers.messagefilter import MessageFilter
@@ -24,6 +25,26 @@ slack_web_client = WebClient(token=os.environ['SLACK_TOKEN'])
 # bot_sent = {"channel": {"user_id": onboarding}}
 bot_sent = {}
 state = {'setup': False}
+
+def show_vote(user_id: str, channel: str, vote: str):
+    # Create a new onboarding tutorial.
+    validation_msg = ValidateVote(channel, vote)
+
+    # Get the onboarding message payload
+    message = validation_msg.get_message_payload()
+
+    # Post the onboarding message in Slack
+    response = slack_web_client.chat_postMessage(**message)
+
+    # Capture the timestamp of the message we've just posted so
+    # we can use it to update the message after a user
+    # has completed an onboarding task.
+    validation_msg.timestamp = response["ts"]
+
+    # Store the message sent in bot_sent
+    if channel not in bot_sent:
+        bot_sent[channel] = {}
+    bot_sent[channel][user_id] = validation_msg
 
 def start_onboarding(user_id: str, channel: str):
     # Create a new onboarding tutorial.
@@ -182,6 +203,7 @@ def handle_new_message(user_id: str, channel: str, text: str):
     if triggered_key:
         print(f"Key '{triggered_key}' was hit")
         KeyboardController().press_keys(triggered_key)
+        show_vote(user_id, channel, triggered_key)
         # requests.post(f'http://{ip}:{port}', json = {'key':triggered_key}, timeout=1)
         # curl --header "Content-Type: application/json" --request POST --data '{"key":KEYSTROKE}' IP:PORT
 
