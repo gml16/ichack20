@@ -19,6 +19,5 @@ class MessageFilter():
     def filter_message(self, message):
         move = message._content.lower()
         is_legal = move in self._legal_moves
-        if is_legal:
-            triggered_key = self._controller.register_move(move)
+        triggered_key = self._controller.register_move(move) if is_legal else False
         return is_legal, triggered_key
